@@ -68,6 +68,7 @@ namespace Jasily.FunctionInvoker
             return exps;
         }
 
+        [PublicAPI]
         public static IMethodInvoker CreateInvoker([NotNull] MethodInfo method)
         {
             if (method == null) throw new ArgumentNullException(nameof(method));
@@ -94,14 +95,16 @@ namespace Jasily.FunctionInvoker
             return (IMethodInvoker) Activator.CreateInstance(ResolveType(), method);
         }
 
+        [PublicAPI]
         public static IConstructorInvoker CreateInvoker([NotNull] ConstructorInfo constructor)
         {
             if (constructor == null) throw new ArgumentNullException(nameof(constructor));
+            if (constructor.ContainsGenericParameters) throw new InvalidOperationException("Method cannot contains generic parameters.");
 
             var reflectedType = constructor.ReflectedType;
             var type = typeof(ConstructorInvoker<>).MakeGenericType(reflectedType);
 
-            return (IConstructorInvoker)Activator.CreateInstance(type, constructor);
+            return (IConstructorInvoker) Activator.CreateInstance(type, constructor);
         }
     }
 }

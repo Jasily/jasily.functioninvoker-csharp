@@ -36,7 +36,7 @@ namespace Jasily.FunctionInvoker.Internal
 
         object IObjectMethodInvoker<TObject, object>.Invoke(TObject instance, IArgumentsResolver resolver)
         {
-            this.Invoke((TObject)instance, resolver);
+            this.Invoke(instance, resolver);
             return null;
         }
 
