@@ -26,11 +26,18 @@ namespace Jasily.FunctionInvoker
                 .Single(z => z.GetParameters().Length == 2);
         }
 
-        protected internal FunctionInvoker(MethodBase method)
+        protected internal FunctionInvoker([CanBeNull] MethodBase method)
         {
-            this.Parameters = new ReadOnlyCollection<ParameterResolver> (method.GetParameters()
-                .Select(ParameterResolver.Create)
-                .ToArray());
+            if (method != null)
+            {
+                this.Parameters = new ReadOnlyCollection<ParameterResolver>(method.GetParameters()
+                    .Select(ParameterResolver.Create)
+                    .ToArray());
+            }
+            else
+            {
+                this.Parameters = new ReadOnlyCollection<ParameterResolver>(Array.Empty<ParameterResolver>());
+            }
         }
 
         [NotNull]
@@ -99,12 +106,29 @@ namespace Jasily.FunctionInvoker
         public static IConstructorInvoker CreateInvoker([NotNull] ConstructorInfo constructor)
         {
             if (constructor == null) throw new ArgumentNullException(nameof(constructor));
-            if (constructor.ContainsGenericParameters) throw new InvalidOperationException("Method cannot contains generic parameters.");
+            if (constructor.ContainsGenericParameters) throw new InvalidOperationException("Constructor cannot contains generic parameters.");
 
             var reflectedType = constructor.ReflectedType;
             var type = typeof(ConstructorInvoker<>).MakeGenericType(reflectedType);
 
             return (IConstructorInvoker) Activator.CreateInstance(type, constructor);
+        }
+
+        /// <summary>
+        /// Create a <see cref="IConstructorInvoker"/> for <see langword="default"/>(<see cref="Type"/>).
+        /// For any reference type, always return <see langword="null"/>.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        [PublicAPI]
+        public static IConstructorInvoker CreateDefaultInvoker([NotNull] Type type)
+        {
+            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (type.ContainsGenericParameters) throw new InvalidOperationException("Type cannot contains generic parameters.");
+            
+            var invokerType = typeof(DefaultInvoker<>).MakeGenericType(type);
+
+            return (IConstructorInvoker)Activator.CreateInstance(invokerType);
         }
     }
 }

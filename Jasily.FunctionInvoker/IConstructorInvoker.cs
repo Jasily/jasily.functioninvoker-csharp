@@ -5,6 +5,10 @@ namespace Jasily.FunctionInvoker
 {
     public interface IConstructorInvoker : IFunctionInvoker
     {
+        /// <summary>
+        /// Return null if the <see cref="IConstructorInvoker"/> is create from <see cref="FunctionInvoker.CreateDefaultInvoker"/>.
+        /// </summary>
+        [CanBeNull]
         ConstructorInfo Constructor { get; }
 
         object Invoke([NotNull] IArgumentsResolver resolver);
