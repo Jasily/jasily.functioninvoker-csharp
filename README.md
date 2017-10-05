@@ -67,3 +67,17 @@ Try this for avoid boxing:
 var invoker = FunctionInvoker.CreateDefaultInvoker(typeof(int)).AsConstructorInvoker<int>();
 invoker.Invoke(); // 0
 ```
+
+### `IArgumentsResolver`
+
+`invoker` require a `IArgumentsResolver` to resolve all arguments.
+
+``` cs
+public interface IArgumentsResolver
+{
+    object Resolve(ParameterInfo parameter);
+    T Resolve<T>(ParameterInfo parameter);
+}
+```
+
+You can create your own `IArgumentsResolver` and avoid boxing.
