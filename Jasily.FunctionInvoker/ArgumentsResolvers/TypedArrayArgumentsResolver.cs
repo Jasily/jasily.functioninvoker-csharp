@@ -47,6 +47,18 @@ namespace Jasily.FunctionInvoker.ArgumentsResolvers
             }
         }
 
+        public void SetDefault<T>(int index)
+        {
+            if (this._boxes[index] is Box<T> box)
+            {
+                box.Value = default(T);
+            }
+            else
+            {
+                this._boxes[index] = null;
+            }
+        }
+
         public object Resolve(ParameterInfo parameter)
         {
             return this._boxes[parameter.Position]?.GetValue();
