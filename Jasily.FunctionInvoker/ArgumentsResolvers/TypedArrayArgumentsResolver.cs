@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 
 namespace Jasily.FunctionInvoker.ArgumentsResolvers
@@ -6,6 +9,7 @@ namespace Jasily.FunctionInvoker.ArgumentsResolvers
     /// <summary>
     /// A reuseable arguments resolver for avoid boxing.
     /// </summary>
+    [DebuggerDisplay("{" + nameof(DebuggerDisplay) + "()}")]
     public class TypedArrayArgumentsResolver : IArgumentsResolver
     {
         private abstract class Box
@@ -13,6 +17,7 @@ namespace Jasily.FunctionInvoker.ArgumentsResolvers
             public abstract object GetValue();
         }
 
+        [DebuggerDisplay("{" + nameof(Value) + "}")]
         private class Box<T> : Box
         {
             public T Value;
@@ -51,6 +56,11 @@ namespace Jasily.FunctionInvoker.ArgumentsResolvers
         {
             var box = this._boxes[parameter.Position];
             return box == null ? default(T) : ((Box<T>)box).Value; // for unset value, use default.
+        }
+
+        private object DebuggerDisplay()
+        {
+            return ArrayArgumentsResolver.GetDebuggerDisplay(this._boxes.Select(z => z?.GetValue()).ToArray());
         }
 
         public static TypedArrayArgumentsResolver Create<T>(T value)
