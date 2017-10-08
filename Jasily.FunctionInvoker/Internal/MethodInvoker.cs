@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
+using System.Threading;
 using JetBrains.Annotations;
 
 namespace Jasily.FunctionInvoker.Internal
@@ -33,6 +34,6 @@ namespace Jasily.FunctionInvoker.Internal
             }
         }
 
-        public override bool IsCompiled => this._isCompiled;
+        public override bool IsCompiled => this._isCompiled || Volatile.Read(ref this._isCompiled);
     }
 }

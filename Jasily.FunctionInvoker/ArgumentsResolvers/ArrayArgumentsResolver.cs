@@ -11,7 +11,7 @@ namespace Jasily.FunctionInvoker.ArgumentsResolvers
     {
         private readonly object[] _arguments;
 
-        public ArrayArgumentsResolver([NotNull] params object[] arguments)
+        public ArrayArgumentsResolver([NotNull] object[] arguments)
         {
             this._arguments = arguments ?? throw new ArgumentNullException(nameof(arguments));
         }

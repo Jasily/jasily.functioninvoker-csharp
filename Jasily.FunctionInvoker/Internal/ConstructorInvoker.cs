@@ -77,6 +77,6 @@ namespace Jasily.FunctionInvoker.Internal
             ).Compile();
         }
 
-        public override bool IsCompiled => this._isCompiled;
+        public override bool IsCompiled => this._isCompiled || Volatile.Read(ref this._isCompiled);
     }
 }

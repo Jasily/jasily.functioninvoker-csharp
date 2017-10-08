@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using JetBrains.Annotations;
 
 namespace Jasily.FunctionInvoker.ArgumentsResolvers
 {
@@ -129,6 +130,17 @@ namespace Jasily.FunctionInvoker.ArgumentsResolvers
             resolver.SetValue(3, value3);
             resolver.SetValue(4, value4);
             resolver.SetValue(5, value5);
+            return resolver;
+        }
+
+        public static TypedArrayArgumentsResolver Create<T>([NotNull] T[] arguments)
+        {
+            if (arguments == null) throw new ArgumentNullException(nameof(arguments));
+            var resolver = new TypedArrayArgumentsResolver(arguments.Length);
+            for (var i = 0; i < arguments.Length; i++)
+            {
+                resolver.SetValue(i, arguments[i]);
+            }
             return resolver;
         }
     }
