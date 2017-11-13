@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>Jasily.FunctionInvoker</id>
+        <version>0.1.0.1</version>
+        <title>Jasily.FunctionInvoker</title>
+        <authors>Jasily</authors>
+        <owners>Jasily</owners>
+        <licenseUrl>https://github.com/Jasily/jasily.functioninvoker-csharp/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/Jasily/jasily.functioninvoker-csharp</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A lib for easy compile method to delegate.</description>
+        <copyright>Copyright 2017</copyright>
+        <tags>expression</tags>
+    </metadata>
+    <files>
+        <file src="bin\Release\netstandard2.0\Jasily.FunctionInvoker.dll" target="lib\netstandard2.0\Jasily.FunctionInvoker.dll" />
+        <file src="bin\Release\netstandard2.0\Jasily.FunctionInvoker.xml" target="lib\netstandard2.0\Jasily.FunctionInvoker.xml" />
+    </files>
+</package>
