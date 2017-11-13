@@ -99,21 +99,26 @@ namespace Jasily.FunctionInvoker.Test
             // ignore, see `TestDefault`.
         }
 
-        struct MyStruct
+        struct HasArgsStruct
         {
-            public int Value { get; }
+            public int Value { get; set; }
 
-            public MyStruct(int val) => this.Value = val;
+            public HasArgsStruct(int val)
+            {
+                this.Value = val;
+            }
+
+            public static int ConstVal => 1998;
         }
 
         [TestMethod]
         public override void TestHasArgsConstructor()
         {
-            var invoker = FunctionInvoker.CreateInvoker(typeof(MyStruct).GetConstructors().Single());
-            InternalAssert(invoker, new MyStruct(3).Value, () => ((MyStruct) invoker.Invoke(new object[] { 3 })).Value);
-            InternalAssert(invoker, new MyStruct(4).Value, () => ((MyStruct) invoker.Invoke(new int[] { 4 })).Value);
-            InternalAssert(invoker, new MyStruct(5).Value, () => invoker.AsConstructorInvoker<MyStruct>().Invoke(new object[] { 5 }).Value);
-            InternalAssert(invoker, new MyStruct(6).Value, () => invoker.AsConstructorInvoker<MyStruct>().Invoke(new int[] { 6 }).Value);
+            var invoker = FunctionInvoker.CreateInvoker(typeof(HasArgsStruct).GetConstructors().Single());
+            InternalAssert(invoker, new HasArgsStruct(3).Value, () => ((HasArgsStruct) invoker.Invoke(new object[] { 3 })).Value);
+            InternalAssert(invoker, new HasArgsStruct(4).Value, () => ((HasArgsStruct) invoker.Invoke(new int[] { 4 })).Value);
+            InternalAssert(invoker, new HasArgsStruct(5).Value, () => invoker.AsConstructorInvoker<HasArgsStruct>().Invoke(new object[] { 5 }).Value);
+            InternalAssert(invoker, new HasArgsStruct(6).Value, () => invoker.AsConstructorInvoker<HasArgsStruct>().Invoke(new int[] { 6 }).Value);
         }
 
         [TestMethod]
@@ -122,6 +127,25 @@ namespace Jasily.FunctionInvoker.Test
             var invoker = FunctionInvoker.CreateDefaultInvoker(typeof(int));
             InternalAssert(invoker, default(int), () => invoker.Invoke());
             InternalAssert(invoker, default(int), () => invoker.AsConstructorInvoker<int>().Invoke());
+        }
+
+        [TestMethod]
+        public override void TestInstancePropertyAccessors()
+        {
+            var property = typeof(HasArgsStruct).GetRuntimeProperty(nameof(HasArgsStruct.Value));
+            
+            var getterInvoker = FunctionInvoker.CreateInvoker(property.GetMethod);
+            InternalAssert(getterInvoker, new HasArgsStruct(3).Value, 
+                () => getterInvoker.AsObjectMethodInvoker().Invoke(new HasArgsStruct(3)));
+            InternalAssert(getterInvoker, new HasArgsStruct(4).Value, 
+                () => getterInvoker.AsObjectMethodInvoker<HasArgsStruct, int>().Invoke(new HasArgsStruct(4)));
+
+            // value type setter alawys not work.
+        }
+
+        public override void TestStaticPropertyAccessors()
+        {
+            // this should same as reference type static property accessors.
         }
     }
 }

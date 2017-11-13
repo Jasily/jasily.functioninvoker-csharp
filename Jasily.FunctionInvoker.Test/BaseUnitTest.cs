@@ -36,5 +36,9 @@ namespace Jasily.FunctionInvoker.Test
         public abstract void TestHasArgsConstructor();
 
         public abstract void TestDefault();
+
+        public abstract void TestInstancePropertyAccessors();
+
+        public abstract void TestStaticPropertyAccessors();
     }
 }
