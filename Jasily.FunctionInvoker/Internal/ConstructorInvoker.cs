@@ -13,12 +13,13 @@ namespace Jasily.FunctionInvoker.Internal
     {
         private Func<IArgumentsResolver, TObject> _func;
 
-        public ConstructorInvoker(ConstructorInfo constructor) : base(constructor)
+        public ConstructorInvoker([NotNull] ConstructorInfo constructor) : base(constructor)
         {
             this.Constructor = constructor;
             this._func = this.ImplFunc();
         }
 
+        [NotNull]
         public ConstructorInfo Constructor { get; }
 
         private object InvokeMethod([NotNull] IArgumentsResolver resolver)
