@@ -2,6 +2,14 @@
 
 Provide a way to dynamic invoke compiled method.
 
+## Install
+
+**From Nuget**
+
+``` power-shell
+Install-Package Jasily.FunctionInvoker
+```
+
 ## Usage
 
 Namespaces:
