@@ -27,7 +27,12 @@ namespace Jasily.FunctionInvoker.Internal
 
         private Action<IArgumentsResolver> ImplFunc()
         {
-            if (CompileThreshold <= 0) return this.CompileFunc();
+            if (CompileThreshold <= 0)
+            {
+                this.IsCompiled = true;
+                return this.CompileFunc();
+            }
+
             var count = 0;
             return resolver =>
             {
@@ -35,8 +40,8 @@ namespace Jasily.FunctionInvoker.Internal
                 {
                     Task.Run(() =>
                     {
-                        Volatile.Write(ref this._func, this.CompileFunc());
-                        Volatile.Write(ref this._isCompiled, true);
+                        Interlocked.Exchange(ref this._func, this.CompileFunc());
+                        this.IsCompiled = true;
                     });
                 }
 
@@ -75,7 +80,12 @@ namespace Jasily.FunctionInvoker.Internal
 
         private Func<IArgumentsResolver, TResult> ImplFunc()
         {
-            if (CompileThreshold <= 0) return this.CompileFunc();
+            if (CompileThreshold <= 0)
+            {
+                this.IsCompiled = true;
+                return this.CompileFunc();
+            }
+
             var count = 0;
             return resolver =>
             {
@@ -83,8 +93,8 @@ namespace Jasily.FunctionInvoker.Internal
                 {
                     Task.Run(() =>
                     {
-                        Volatile.Write(ref this._func, this.CompileFunc());
-                        Volatile.Write(ref this._isCompiled, true);
+                        Interlocked.Exchange(ref this._func, this.CompileFunc());
+                        this.IsCompiled = true;
                     });
                 }
 

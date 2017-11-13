@@ -9,11 +9,9 @@ using JetBrains.Annotations;
 namespace Jasily.FunctionInvoker.Internal
 {
     internal sealed class ConstructorInvoker<TObject> : FunctionInvoker,
-        IConstructorInvoker, 
         IConstructorInvoker<TObject>
     {
         private Func<IArgumentsResolver, TObject> _func;
-        private bool _isCompiled;
 
         public ConstructorInvoker(ConstructorInfo constructor) : base(constructor)
         {
@@ -49,7 +47,12 @@ namespace Jasily.FunctionInvoker.Internal
 
         private Func<IArgumentsResolver, TObject> ImplFunc()
         {
-            if (CompileThreshold <= 0) return this.CompileFunc();
+            if (CompileThreshold <= 0)
+            {
+                this.IsCompiled = true;
+                return this.CompileFunc();
+            }
+
             var count = 0;
             return resolver =>
             {
@@ -57,8 +60,8 @@ namespace Jasily.FunctionInvoker.Internal
                 {
                     Task.Run(() =>
                     {
-                        Volatile.Write(ref this._func, this.CompileFunc());
-                        Volatile.Write(ref this._isCompiled, true);
+                        Interlocked.Exchange(ref this._func, this.CompileFunc());
+                        this.IsCompiled = true;
                     });
                 }
 
@@ -76,7 +79,5 @@ namespace Jasily.FunctionInvoker.Internal
                 ParameterArgumentsResolver
             ).Compile();
         }
-
-        public override bool IsCompiled => this._isCompiled || Volatile.Read(ref this._isCompiled);
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using Jasily.FunctionInvoker.Internal;
 using JetBrains.Annotations;
 
@@ -26,6 +27,8 @@ namespace Jasily.FunctionInvoker
                 .Single(z => z.GetParameters().Length == 2);
         }
 
+        private bool _isCompiled;
+
         protected internal FunctionInvoker([CanBeNull] MethodBase method)
         {
             if (method != null)
@@ -43,7 +46,11 @@ namespace Jasily.FunctionInvoker
         [NotNull]
         internal IReadOnlyList<ParameterResolver> Parameters { get; }
 
-        public abstract bool IsCompiled { get; }
+        public virtual bool IsCompiled
+        {
+            get => this._isCompiled || Volatile.Read(ref this._isCompiled);
+            internal set => Volatile.Write(ref this._isCompiled, value);
+        }
 
         internal object[] ResolveArguments([NotNull] IArgumentsResolver resolver)
         {

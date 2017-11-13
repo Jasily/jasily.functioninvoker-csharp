@@ -22,7 +22,7 @@ namespace Jasily.FunctionInvoker.Internal
 
         public static ParameterResolver Create(ParameterInfo parameter)
         {
-            var type = typeof(ParameterResolver<>).MakeGenericType(parameter.ParameterType);
+            var type = typeof(ParameterResolver<>).MakeGenericType(parameter.ParameterType); // ref/out param will crash here.
             return (ParameterResolver)Activator.CreateInstance(type, parameter);
         }
     }

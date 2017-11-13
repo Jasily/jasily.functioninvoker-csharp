@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Jasily.FunctionInvoker.Internal
@@ -9,8 +10,6 @@ namespace Jasily.FunctionInvoker.Internal
     internal abstract class MethodInvoker : FunctionInvoker,
         IMethodInvoker
     {
-        protected bool _isCompiled;
-
         protected MethodInvoker(MethodInfo method) : base(method)
         {
             this.Method = method;
@@ -33,7 +32,5 @@ namespace Jasily.FunctionInvoker.Internal
                 throw;
             }
         }
-
-        public override bool IsCompiled => this._isCompiled || Volatile.Read(ref this._isCompiled);
     }
 }
